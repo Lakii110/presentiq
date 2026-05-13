@@ -28,3 +28,6 @@ soundfile>=0.12.1,<1
 
 # Class imbalance / SMOTE experiments (evaluate_imbalance_smote_models.py)
 imbalanced-learn>=0.12.0,<1
+
+# Monitoring
+psutil>=5.9.0,<6

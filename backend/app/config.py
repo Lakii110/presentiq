@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     app_name: str = "PresentIQ API"
-    secret_key: str = "change-me-in-production-use-openssl-rand-hex-32"
+    secret_key: str = "6a722eff3ad5748d86ae36dbd53f437412d724195c0fa5fa8ab5dd9a34e0d77e"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7
 
