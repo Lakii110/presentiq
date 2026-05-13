@@ -1,0 +1,30 @@
+# FastAPI API
+fastapi>=0.115.0,<1
+uvicorn[standard]>=0.32.0,<1
+python-multipart>=0.0.9,<1
+pydantic>=2.9.0,<3
+pydantic-settings>=2.6.0,<3
+email-validator>=2.0.0,<3
+python-dotenv>=1.0.0,<2
+
+# Database
+sqlalchemy>=2.0.36,<3
+
+# Auth (JWT + password hashing)
+python-jose[cryptography]>=3.3.0,<4
+passlib[argon2]>=1.7.4,<2
+argon2-cffi>=23.1.0,<24
+
+# Speech (requires FFmpeg on PATH for many formats)
+faster-whisper>=1.0.0,<2
+
+# ML / audio feature extraction
+numpy>=2.0.0,<3
+scipy>=1.13.0,<2
+scikit-learn>=1.5.0,<2
+joblib>=1.4.0,<2
+librosa>=0.10.2.post1,<1
+soundfile>=0.12.1,<1
+
+# Class imbalance / SMOTE experiments (evaluate_imbalance_smote_models.py)
+imbalanced-learn>=0.12.0,<1
