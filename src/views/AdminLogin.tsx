@@ -74,14 +74,62 @@ const AdminLogin = () => {
             </div>
           </div>
 
-          {/* Shield icon */}
+          {/* Neumorphic Robot */}
           <div className="relative animate-float" style={{ marginTop: 8 }}>
-            <div className="absolute inset-0 scale-150 rounded-[32px] blur-3xl" style={{ background: "rgba(34,211,238,0.1)" }} />
-            <div className="relative flex h-[160px] w-[160px] items-center justify-center rounded-[30px]"
-              style={{ background: "linear-gradient(145deg, #FFFFFF, #F0F2F5)", boxShadow: "12px 12px 28px rgba(0,0,0,0.12), -8px -8px 20px rgba(255,255,255,0.6)" }}>
-              <div className="relative flex h-[110px] w-[110px] items-center justify-center rounded-[22px]"
-                style={{ background: "linear-gradient(145deg, #1F2A37, #0F172A)", boxShadow: "inset 0 3px 12px rgba(0,0,0,0.5)" }}>
-                <Shield className="h-12 w-12 text-cyan-400" style={{ filter: "drop-shadow(0 0 8px #22D3EE)" }} />
+            <div
+              className="absolute inset-0 scale-150 rounded-[32px] blur-3xl"
+              style={{ background: "rgba(34,211,238,0.1)" }}
+            />
+            <div
+              className="relative flex h-[160px] w-[160px] items-center justify-center rounded-[30px]"
+              style={{
+                background: "linear-gradient(145deg, #FFFFFF, #F0F2F5)",
+                boxShadow:
+                  "12px 12px 28px rgba(0,0,0,0.12), -8px -8px 20px rgba(255,255,255,0.6), inset 1px 1px 3px rgba(255,255,255,0.8)",
+              }}
+            >
+              <div
+                className="relative flex h-[110px] w-[110px] items-center justify-center rounded-[22px]"
+                style={{
+                  background: "linear-gradient(145deg, #1F2A37, #0F172A)",
+                  boxShadow:
+                    "inset 0 3px 12px rgba(0,0,0,0.5), 0 0 24px rgba(15,23,42,0.3)",
+                }}
+              >
+                <div
+                  className="absolute -top-[5px] left-1/2 h-[6px] w-[6px] -translate-x-1/2 rounded-full animate-pulse-glow"
+                  style={{
+                    background: "#38BDF8",
+                    boxShadow: "0 0 6px #38BDF8, 0 0 14px rgba(56,189,248,0.4)",
+                  }}
+                />
+                <div className="flex items-center gap-[16px]">
+                  <div
+                    className="h-[32px] w-[16px] rounded-full animate-blink"
+                    style={{
+                      background: "#22D3EE",
+                      boxShadow:
+                        "0 0 10px #22D3EE, 0 0 20px #67E8F9, 0 0 30px rgba(34,211,238,0.25)",
+                    }}
+                  />
+                  <div
+                    className="h-[32px] w-[16px] rounded-full animate-blink"
+                    style={{
+                      animationDelay: "0.1s",
+                      background: "#22D3EE",
+                      boxShadow:
+                        "0 0 10px #22D3EE, 0 0 20px #67E8F9, 0 0 30px rgba(34,211,238,0.25)",
+                    }}
+                  />
+                </div>
+                <div
+                  className="absolute bottom-[22px] left-[20px] h-[8px] w-[8px] rounded-full"
+                  style={{ background: "#F472B6", opacity: 0.3, filter: "blur(2px)" }}
+                />
+                <div
+                  className="absolute bottom-[22px] right-[20px] h-[8px] w-[8px] rounded-full"
+                  style={{ background: "#F472B6", opacity: 0.3, filter: "blur(2px)" }}
+                />
               </div>
             </div>
           </div>
