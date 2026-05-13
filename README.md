@@ -194,7 +194,7 @@ dataset_speech/
     └── scores.json
 ```
 
-📖 **Detailed instructions:** See [DATASET_SETUP.md](./DATASET_SETUP.md)
+📖 **Detailed instructions:** See [HOW_TO_RUN.md](./HOW_TO_RUN.md)
 
 ---
 
@@ -256,10 +256,8 @@ presentiq/
 
 ## 📚 Documentation
 
-- **[HOW_TO_RUN.md](./HOW_TO_RUN.md)** - Detailed running instructions
-- **[DATASET_SETUP.md](./DATASET_SETUP.md)** - Dataset setup guide
-- **[DATASET_TRAINING_GUIDE.md](./DATASET_TRAINING_GUIDE.md)** - Model training guide
-- **[QUICK_START_GUIDE.md](./QUICK_START_GUIDE.md)** - Quick start guide
+- **[HOW_TO_RUN.md](./HOW_TO_RUN.md)** - Complete setup and running instructions
+- **[README.md](./README.md)** - Project overview (this file)
 
 ---
 
