@@ -6,33 +6,33 @@ import HeroBotAnimation from "./HeroBotAnimation";
 
 const HeroSection = () => {
   return (
-    <section className="gradient-hero overflow-hidden py-20 lg:py-28">
-      <div className="container mx-auto px-4" style={{ maxWidth: 1320 }}>
-        <div className="grid items-center gap-8 lg:grid-cols-2">
+    <section className="gradient-hero overflow-hidden py-12 sm:py-16 md:py-20 lg:py-28">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: 1320 }}>
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="max-w-xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm text-primary">
+            <div className="mb-4 sm:mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs sm:text-sm text-primary">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
               Practice smarter, present better
             </div>
-            <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-5xl lg:text-6xl">
+            <h1 className="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-foreground">
               Master Every Presentation with{" "}
               <span className="text-gradient">AI-Powered</span>{" "}
               Feedback
             </h1>
-            <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
+            <p className="mb-6 sm:mb-8 text-base sm:text-lg leading-relaxed text-muted-foreground">
               Get instant feedback on your pacing, filler words, confidence, and clarity. Practice privately and deliver perfectly when it matters most.
             </p>
-            <div className="flex flex-wrap items-center gap-4">
-              <Link href="/signup">
-                <Button size="lg" className="gap-2 px-8 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
+              <Link href="/signup" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto gap-2 px-6 sm:px-8 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
                   Start Analyzing Now <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
             </div>
-            <p className="mt-4 text-xs text-muted-foreground/70">Free to use. No sign-up required.</p>
-            <div className="mt-10">
-              <p className="mb-3 text-xs text-muted-foreground/60">Trusted by teams and students at</p>
-              <div className="flex flex-wrap items-center gap-8 text-sm font-semibold text-muted-foreground/40">
+            <p className="mt-3 sm:mt-4 text-xs text-muted-foreground/70">Free to use. No sign-up required.</p>
+            <div className="mt-8 sm:mt-10">
+              <p className="mb-2 sm:mb-3 text-xs text-muted-foreground/60">Trusted by teams and students at</p>
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-8 text-xs sm:text-sm font-semibold text-muted-foreground/40">
                 <span>Google</span>
                 <span>Microsoft</span>
                 <span>Stanford</span>
@@ -42,7 +42,7 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
             <HeroBotAnimation />
           </div>
         </div>
