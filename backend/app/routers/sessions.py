@@ -134,6 +134,30 @@ async def upload_audio(
     return row
 
 
+@router.delete("/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_session(
+    session_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[User, Depends(get_current_user)],
+) -> None:
+    """Delete a specific session for the current user."""
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(f"Delete request for session {session_id} by user {user.id}")
+    
+    row = db.get(PracticeSession, session_id)
+    if row is None:
+        logger.warning(f"Session {session_id} not found in database")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+    if row.user_id != user.id:
+        logger.warning(f"User {user.id} attempted to delete session {session_id} owned by user {row.user_id}")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+    
+    db.delete(row)
+    db.commit()
+    logger.info(f"Session {session_id} deleted successfully")
+
+
 @router.delete("", status_code=status.HTTP_204_NO_CONTENT)
 def delete_all_sessions(
     db: Annotated[Session, Depends(get_db)],

@@ -1,5 +1,6 @@
-import { Flame, TrendingUp, AlertTriangle, Zap, CheckCircle2 } from "lucide-react";
+import { Flame, TrendingUp, AlertTriangle, Zap, CheckCircle2, Target } from "lucide-react";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useMemo } from "react";
 
 const FALLBACK_TIPS = [
   { icon: Flame, title: "Reduce filler words", desc: "Try pausing instead of saying 'um' or 'uh' — silence is powerful.", color: "hsl(var(--destructive))" },
@@ -10,7 +11,7 @@ const FALLBACK_TIPS = [
 function iconForType(type: string) {
   if (type === "strength") return CheckCircle2;
   if (type === "weakness") return AlertTriangle;
-  return Zap;
+  return Target;
 }
 
 function colorForType(type: string) {
@@ -20,16 +21,147 @@ function colorForType(type: string) {
 }
 
 const DashboardCoachTips = () => {
-  const { latestReady } = useDashboardData();
+  const { sessions } = useDashboardData();
 
-  const tips = latestReady
-    ? latestReady.insights.slice(0, 3).map((insight) => ({
-        icon: iconForType(insight.type),
-        title: insight.type === "strength" ? "Strength" : insight.type === "weakness" ? "Needs Work" : "Suggestion",
-        desc: insight.text,
-        color: colorForType(insight.type),
-      }))
-    : FALLBACK_TIPS;
+  // Calculate overall statistics from ALL sessions
+  const overallStats = useMemo(() => {
+    const readySessions = sessions.filter(s => s.status === "ready" && s.analysis);
+    
+    if (readySessions.length === 0) return null;
+
+    // Aggregate all skills across all sessions
+    const skillAverages: { [key: string]: number[] } = {};
+    
+    readySessions.forEach(session => {
+      if (!session.analysis?.skills) return;
+      
+      session.analysis.skills.forEach((skill: any) => {
+        if (!skillAverages[skill.skill]) {
+          skillAverages[skill.skill] = [];
+        }
+        skillAverages[skill.skill].push(skill.value);
+      });
+    });
+
+    // Calculate average for each skill
+    const skills = Object.entries(skillAverages).map(([name, values]) => ({
+      skill: name,
+      average: Math.round(values.reduce((a, b) => a + b, 0) / values.length),
+      count: values.length,
+    }));
+
+    // Sort by average (lowest first for weaknesses)
+    skills.sort((a, b) => a.average - b.average);
+
+    const weakestSkill = skills[0];
+    const strongestSkill = skills[skills.length - 1];
+    
+    // Calculate overall score average
+    const overallScores = readySessions.map(s => s.analysis?.overall_score || 0);
+    const avgScore = Math.round(overallScores.reduce((a, b) => a + b, 0) / overallScores.length);
+
+    // Calculate improvement trend (compare first half vs second half)
+    const halfPoint = Math.floor(overallScores.length / 2);
+    const firstHalfAvg = overallScores.slice(0, halfPoint).reduce((a, b) => a + b, 0) / halfPoint;
+    const secondHalfAvg = overallScores.slice(halfPoint).reduce((a, b) => a + b, 0) / (overallScores.length - halfPoint);
+    const improvement = overallScores.length >= 4 ? secondHalfAvg - firstHalfAvg : 0;
+
+    return {
+      totalSessions: readySessions.length,
+      avgScore,
+      weakestSkill,
+      strongestSkill,
+      improvement,
+      skills,
+    };
+  }, [sessions]);
+
+  // Generate personalized tips based on overall activity
+  const tips = useMemo(() => {
+    if (!overallStats) return FALLBACK_TIPS;
+
+    const generatedTips = [];
+
+    // Tip 1: Weakest skill across all sessions
+    if (overallStats.weakestSkill) {
+      const skill = overallStats.weakestSkill;
+      let desc = "";
+      
+      if (skill.skill === "Filler Words") {
+        desc = `Your filler word control averages ${skill.average}% across ${skill.count} sessions. Replace 'um' and 'like' with brief pauses to sound more confident.`;
+      } else if (skill.skill === "Pacing") {
+        desc = `Your pacing averages ${skill.average}% across ${skill.count} sessions. Aim for 130-160 words per minute and pause after key points.`;
+      } else if (skill.skill === "Clarity") {
+        desc = `Your clarity averages ${skill.average}% across ${skill.count} sessions. Keep sentences short and define technical terms clearly.`;
+      } else if (skill.skill === "Confidence") {
+        desc = `Your confidence averages ${skill.average}% across ${skill.count} sessions. Practice maintaining steady energy throughout your presentations.`;
+      } else if (skill.skill === "Tone") {
+        desc = `Your tone variation averages ${skill.average}% across ${skill.count} sessions. Emphasize key words and vary your pitch to keep listeners engaged.`;
+      } else if (skill.skill === "Fluency") {
+        desc = `Your fluency averages ${skill.average}% across ${skill.count} sessions. Reduce long pauses and keep transitions smooth between ideas.`;
+      } else {
+        desc = `Your ${skill.skill.toLowerCase()} averages ${skill.average}% across ${skill.count} sessions. Focus on improving this area in your next practice.`;
+      }
+
+      generatedTips.push({
+        icon: AlertTriangle,
+        title: `Focus Area: ${skill.skill}`,
+        desc,
+        color: "hsl(var(--destructive))",
+      });
+    }
+
+    // Tip 2: Overall progress or strongest skill
+    if (overallStats.improvement > 5) {
+      generatedTips.push({
+        icon: TrendingUp,
+        title: "Great Progress!",
+        desc: `You've improved by ${Math.round(overallStats.improvement)} points across your ${overallStats.totalSessions} sessions. Keep up the momentum!`,
+        color: "hsl(var(--success))",
+      });
+    } else if (overallStats.strongestSkill) {
+      const skill = overallStats.strongestSkill;
+      generatedTips.push({
+        icon: CheckCircle2,
+        title: `Strength: ${skill.skill}`,
+        desc: `Your ${skill.skill.toLowerCase()} consistently scores ${skill.average}% across ${skill.count} sessions. This is a solid foundation to build on!`,
+        color: "hsl(var(--success))",
+      });
+    }
+
+    // Tip 3: Personalized recommendation based on overall score
+    if (overallStats.avgScore < 60) {
+      generatedTips.push({
+        icon: Target,
+        title: "Practice Consistently",
+        desc: `Your average score is ${overallStats.avgScore}%. Focus on one skill at a time and practice daily for 5-10 minutes to see steady improvement.`,
+        color: "hsl(var(--primary))",
+      });
+    } else if (overallStats.avgScore < 75) {
+      generatedTips.push({
+        icon: Zap,
+        title: "You're Building Momentum",
+        desc: `Your average score is ${overallStats.avgScore}%. You're on the right track! Focus on your weakest skill to push past 75%.`,
+        color: "hsl(var(--primary))",
+      });
+    } else if (overallStats.avgScore < 85) {
+      generatedTips.push({
+        icon: Flame,
+        title: "Almost There!",
+        desc: `Your average score is ${overallStats.avgScore}%. You're doing great! Polish your delivery by recording yourself and listening back.`,
+        color: "hsl(var(--primary))",
+      });
+    } else {
+      generatedTips.push({
+        icon: CheckCircle2,
+        title: "Excellent Performance",
+        desc: `Your average score is ${overallStats.avgScore}%! Maintain this level by practicing regularly and challenging yourself with longer presentations.`,
+        color: "hsl(var(--success))",
+      });
+    }
+
+    return generatedTips.slice(0, 3);
+  }, [overallStats]);
 
   return (
     <div className="border border-border bg-card" style={{ borderRadius: 20, padding: 24 }}>
@@ -46,7 +178,7 @@ const DashboardCoachTips = () => {
         <div>
           <h3 className="text-base font-semibold text-foreground">AI Coach Tips</h3>
           <p className="text-muted-foreground" style={{ fontSize: 11 }}>
-            {latestReady ? "From your latest session" : "Personalized feedback for you"}
+            {overallStats ? `Based on your ${overallStats.totalSessions} sessions` : "Personalized feedback for you"}
           </p>
         </div>
       </div>

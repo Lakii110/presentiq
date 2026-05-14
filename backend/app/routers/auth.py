@@ -42,14 +42,35 @@ def login(body: LoginBody, db: Session = Depends(get_db)) -> Token:
     logger = logging.getLogger(__name__)
     logger.info(f"Login attempt for email: {body.email}")
     
-    user = db.execute(select(User).where(User.email == body.email.lower().strip())).scalar_one_or_none()
-    if user is None or not verify_password(body.password, user.hashed_password):
-        logger.warning(f"Failed login for email: {body.email}")
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+    try:
+        user = db.execute(select(User).where(User.email == body.email.lower().strip())).scalar_one_or_none()
+        
+        if user is None:
+            logger.warning(f"User not found: {body.email}")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+        
+        # Verify password with error handling
+        password_valid = False
+        try:
+            password_valid = verify_password(body.password, user.hashed_password)
+        except Exception as e:
+            logger.error(f"Password verification error for {body.email}: {e}")
+            # If password hash is corrupted, treat as invalid password
+            password_valid = False
+        
+        if not password_valid:
+            logger.warning(f"Invalid password for email: {body.email}")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+        
+        logger.info(f"Successful login for email: {body.email}")
+        token = create_access_token(str(user.id), is_admin=user.is_admin)
+        return Token(access_token=token, is_admin=user.is_admin)
     
-    logger.info(f"Successful login for email: {body.email}")
-    token = create_access_token(str(user.id), is_admin=user.is_admin)
-    return Token(access_token=token, is_admin=user.is_admin)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception(f"Unexpected error during login for {body.email}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Login failed")
 
 
 class UpdateProfileBody(BaseModel):
@@ -83,7 +104,12 @@ def change_password(
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ) -> dict:
-    if not verify_password(body.current_password, current.hashed_password):
+    try:
+        password_valid = verify_password(body.current_password, current.hashed_password)
+    except Exception:
+        password_valid = False
+    
+    if not password_valid:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Current password is incorrect")
     if len(body.new_password) < 8:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="New password must be at least 8 characters")

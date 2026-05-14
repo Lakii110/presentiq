@@ -15,6 +15,8 @@ class UserOut(BaseModel):
     display_name: Optional[str] = None
     avatar_url: Optional[str] = None
     is_admin: bool = False
+    two_factor_enabled: bool = False
+    two_factor_method: Optional[str] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

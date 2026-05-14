@@ -18,6 +18,8 @@ class User(Base):
     is_admin: Mapped[bool] = mapped_column(default=False, nullable=False)
     display_name: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
     avatar_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
+    two_factor_enabled: Mapped[bool] = mapped_column(default=False, nullable=False)
+    two_factor_method: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     sessions: Mapped[list["PracticeSession"]] = relationship(back_populates="user", cascade="all, delete-orphan")

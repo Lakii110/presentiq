@@ -169,6 +169,8 @@ def get_analytics(
 class HealthStatus(BaseModel):
     api: str
     database: str
+    ai_engine: str
+    storage: str
     overall: str
 
 @router.get("/health", response_model=HealthStatus)
@@ -181,7 +183,23 @@ def get_health(
         db_status = "Operational"
     except Exception:
         db_status = "Degraded"
-    return HealthStatus(api="Operational", database=db_status, overall="Healthy" if db_status == "Operational" else "Degraded")
+    
+    # Check AI Engine (whisper models directory)
+    import os
+    ai_status = "Operational" if os.path.exists("backend/models") or os.path.exists("models") else "Degraded"
+    
+    # Check Storage (uploads directory)
+    storage_status = "Operational" if os.path.exists("backend/uploads") or os.path.exists("uploads") else "Degraded"
+    
+    overall = "Healthy" if all(s == "Operational" for s in [db_status, ai_status, storage_status]) else "Degraded"
+    
+    return HealthStatus(
+        api="Operational", 
+        database=db_status, 
+        ai_engine=ai_status,
+        storage=storage_status,
+        overall=overall
+    )
 
 
 # ── Feedback moderation ──────────────────────────────────────────────────────
@@ -292,6 +310,19 @@ def get_feature_toggles(
     db: Annotated[Session, Depends(get_db)],
     _: Annotated[User, Depends(require_admin)],
 ) -> FeatureToggles:
+    result = {}
+    for key in FEATURE_KEYS:
+        row = db.get(_PlatformSetting, key)
+        result[key] = (row.value == "true") if row else (DEFAULT_SETTINGS[key] == "true")
+    return FeatureToggles(**result)
+
+
+# Public endpoint for feature toggles (no auth required)
+@router.get("/settings/features/public", response_model=FeatureToggles)
+def get_public_feature_toggles(
+    db: Annotated[Session, Depends(get_db)],
+) -> FeatureToggles:
+    """Public endpoint to get feature toggles without authentication."""
     result = {}
     for key in FEATURE_KEYS:
         row = db.get(_PlatformSetting, key)

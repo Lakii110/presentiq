@@ -439,26 +439,17 @@ const SpeechAnalysis = () => {
               <FileText style={{ width: 16, height: 16, color: "hsl(var(--primary))" }} />
               <h2 className="text-base font-semibold text-foreground">Speech Transcript</h2>
             </div>
-            <span className="text-xs text-muted-foreground">{transcriptData.length} segment{transcriptData.length !== 1 ? "s" : ""}</span>
           </div>
-          <p className="text-xs text-muted-foreground" style={{ marginBottom: 24 }}>Filler words are highlighted — hover for details</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16, maxHeight: 480, overflowY: "auto", paddingRight: 4 }}>
-            {transcriptData.map((seg, i) => {
-              const tt = transcriptTimes(i);
-              const border = transcriptBorderColor(i);
-              const linked = hoveredTranscript === i || (hoveredBar !== null && overlaps(tt.start, tt.end, timelineData[hoveredBar].start, timelineData[hoveredBar].end));
-              return (
-                <div key={i} className="transition-all duration-200" style={{ padding: "12px 16px", borderRadius: 12, borderLeft: `3px solid ${border}`, background: linked ? "hsl(var(--secondary) / 0.5)" : "transparent" }}
-                  onMouseEnter={() => { setHoveredTranscript(i); setHoveredBar(null); }}
-                  onMouseLeave={() => setHoveredTranscript(null)}
-                >
-                  <span className="mb-1 block text-[10px] font-medium text-muted-foreground">{tt.start}s – {tt.end}s</span>
-                  <div className="text-sm text-foreground" style={{ lineHeight: 1.7 }}>
-                    {renderHighlightedText(seg.text, fillers)}
-                  </div>
-                </div>
-              );
-            })}
+          <p className="text-xs text-muted-foreground" style={{ marginBottom: 24 }}>Complete transcript with filler words highlighted</p>
+          <div style={{ padding: "16px 20px", borderRadius: 12, background: "hsl(var(--secondary) / 0.3)", maxHeight: 480, overflowY: "auto" }}>
+            <div className="text-sm text-foreground" style={{ lineHeight: 1.8 }}>
+              {transcriptData.map((seg, i) => (
+                <span key={i}>
+                  {renderHighlightedText(seg.text, fillers)}
+                  {i < transcriptData.length - 1 && " "}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -511,7 +502,7 @@ const SpeechAnalysis = () => {
           <p className="text-xs text-muted-foreground" style={{ marginBottom: 16 }}>Recommended exercises based on your performance</p>
           <div className="grid sm:grid-cols-2" style={{ gap: 12 }}>
             {actionItems.map((action, i) => (
-              <button key={i} type="button" className="group flex items-center gap-4 rounded-2xl border text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              <Link key={i} href="/dashboard/upload" className="group flex items-center gap-4 rounded-2xl border text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                 style={{ padding: "18px 20px", background: action.recommended ? "hsl(var(--primary) / 0.05)" : "hsl(var(--card))", borderColor: action.recommended ? "hsl(var(--primary) / 0.3)" : "hsl(var(--border))" }}
               >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ background: action.recommended ? "hsl(var(--primary) / 0.12)" : "hsl(var(--secondary))" }}>
@@ -528,7 +519,7 @@ const SpeechAnalysis = () => {
                   <span className="text-[10px] text-muted-foreground">{action.time}</span>
                   <ArrowRight style={{ width: 14, height: 14, color: "hsl(var(--muted-foreground))" }} />
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
         </div>

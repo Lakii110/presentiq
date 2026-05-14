@@ -3,7 +3,8 @@ import { useMemo } from "react";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
 function dayName(d: Date): string {
-  return d.toLocaleDateString("en-US", { weekday: "short" });
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return days[d.getDay()];
 }
 
 const DashboardWeeklyProgress = () => {
@@ -31,6 +32,15 @@ const DashboardWeeklyProgress = () => {
   }, [sessions]);
 
   const hasAny = weeklyData.some((d) => typeof d.score === "number");
+  
+  // Calculate dynamic Y-axis range based on actual scores
+  const scores = weeklyData.filter((d) => typeof d.score === "number").map((d) => d.score as number);
+  const minScore = scores.length > 0 ? Math.min(...scores) : 0;
+  const maxScore = scores.length > 0 ? Math.max(...scores) : 100;
+  
+  // Add padding to the range for better visualization
+  const yMin = Math.max(0, Math.floor(minScore / 10) * 10 - 10);
+  const yMax = Math.min(100, Math.ceil(maxScore / 10) * 10 + 10);
 
   return (
     <div className="border border-border bg-card" style={{ borderRadius: 20, padding: 24 }}>
@@ -51,25 +61,41 @@ const DashboardWeeklyProgress = () => {
       ) : (
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={weeklyData}>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-        <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} axisLine={false} tickLine={false} />
-        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} axisLine={false} tickLine={false} domain={[50, 100]} />
-        <Tooltip
-          contentStyle={{
-            backgroundColor: "hsl(var(--card))",
-            border: "1px solid hsl(var(--border))",
-            borderRadius: 8,
-            fontSize: 12,
-          }}
-        />
-        <Line
-          type="monotone"
-          dataKey="score"
-          stroke="hsl(var(--primary))"
-          strokeWidth={2.5}
-          dot={{ fill: "hsl(var(--primary))", r: 3 }}
-          activeDot={{ r: 5 }}
-        />
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+            <XAxis 
+              dataKey="name" 
+              stroke="hsl(var(--muted-foreground))" 
+              fontSize={12} 
+              axisLine={false} 
+              tickLine={false} 
+            />
+            <YAxis 
+              stroke="hsl(var(--muted-foreground))" 
+              fontSize={12} 
+              axisLine={false} 
+              tickLine={false} 
+              domain={[yMin, yMax]}
+              ticks={[yMin, Math.round((yMin + yMax) / 2), yMax]}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "hsl(var(--card))",
+                border: "1px solid hsl(var(--border))",
+                borderRadius: 8,
+                fontSize: 12,
+              }}
+              formatter={(value: number) => [`Score: ${value}`, ""]}
+              labelFormatter={(label: string) => label}
+            />
+            <Line
+              type="monotone"
+              dataKey="score"
+              stroke="hsl(var(--primary))"
+              strokeWidth={2.5}
+              dot={{ fill: "hsl(var(--primary))", r: 4 }}
+              activeDot={{ r: 6 }}
+              connectNulls={false}
+            />
           </LineChart>
         </ResponsiveContainer>
       )}

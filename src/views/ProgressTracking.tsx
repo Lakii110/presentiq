@@ -99,15 +99,41 @@ const ProgressTracking = () => {
     (sessions.find(s => s.analysis)?.analysis?.skills ?? []).filter(s => !EXCLUDED_SKILLS.includes(s.skill)),
     [sessions]);
 
+  // Calculate average skills across ALL sessions
+  const averageSkills = useMemo(() => {
+    const analyzed = sessions.filter(s => s.analysis);
+    if (analyzed.length === 0) return [];
+
+    const skillMap: Record<string, { total: number; count: number; tip: string }> = {};
+    
+    analyzed.forEach(session => {
+      session.analysis!.skills
+        .filter(s => !EXCLUDED_SKILLS.includes(s.skill))
+        .forEach(skill => {
+          if (!skillMap[skill.skill]) {
+            skillMap[skill.skill] = { total: 0, count: 0, tip: skill.tip };
+          }
+          skillMap[skill.skill].total += skill.value;
+          skillMap[skill.skill].count += 1;
+        });
+    });
+
+    return Object.entries(skillMap).map(([skill, data]) => ({
+      skill,
+      value: Math.round(data.total / data.count),
+      tip: data.tip,
+    }));
+  }, [sessions]);
+
   const mostImproved = useMemo(() => {
     const entries = Object.entries(skillTrends).sort((a, b) => b[1] - a[1]);
     return entries[0] ?? null;
   }, [skillTrends]);
 
   const needsFocus = useMemo(() => {
-    if (!latestSkills.length) return null;
-    return [...latestSkills].sort((a, b) => a.value - b.value)[0];
-  }, [latestSkills]);
+    if (!averageSkills.length) return null;
+    return [...averageSkills].sort((a, b) => a.value - b.value)[0];
+  }, [averageSkills]);
 
   const watchOut = useMemo(() => {
     const entries = Object.entries(skillTrends).sort((a, b) => a[1] - b[1]);
@@ -303,21 +329,36 @@ const ProgressTracking = () => {
               )}
             </div>
             <SessionScoreBarChart scoreHistory={scoreHistory} />
+            {/* Color Legend */}
+            <div className="flex items-center justify-center gap-6 mt-4 pt-3 border-t border-border">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded" style={{ background: "rgba(34, 197, 94, 0.85)" }} />
+                <span className="text-xs text-muted-foreground">Excellent (80+)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded" style={{ background: "rgba(251, 146, 60, 0.85)" }} />
+                <span className="text-xs text-muted-foreground">Good (60-79)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded" style={{ background: "rgba(239, 68, 68, 0.85)" }} />
+                <span className="text-xs text-muted-foreground">Needs Work (&lt;60)</span>
+              </div>
+            </div>
           </div>
         )}
 
         {/* ── SKILL BREAKDOWN (Chart.js Polar Area) ── */}
-        {latestSkills.length > 0 && (
+        {averageSkills.length > 0 && (
           <div className="rounded-2xl border border-border bg-card" style={{ padding: 24, marginBottom: 24, opacity: show ? 1 : 0, transform: show ? "none" : "translateY(12px)", transition: "all 0.4s ease 0.1s" }}>
-            <h2 className="text-sm font-bold text-foreground mb-1">Latest Session — Skill Breakdown</h2>
-            <p className="text-xs text-muted-foreground mb-4">How you scored across each speaking skill in your most recent session</p>
+            <h2 className="text-sm font-bold text-foreground mb-1">Overall Skill Breakdown</h2>
+            <p className="text-xs text-muted-foreground mb-4">Average scores across all {sessions.filter(s => s.analysis).length} analyzed session{sessions.filter(s => s.analysis).length !== 1 ? 's' : ''}</p>
             <div className="flex items-center gap-8">
               <div style={{ flex: "0 0 280px" }}>
-                <SkillPolarChart skills={latestSkills} />
+                <SkillPolarChart skills={averageSkills} />
               </div>
               {/* Skill list with scores */}
               <div className="flex-1 space-y-3">
-                {latestSkills.map((s) => {
+                {averageSkills.map((s) => {
                   const Icon = SKILL_ICONS[s.skill] ?? TrendingUp;
                   const trend = skillTrends[s.skill] ?? 0;
                   return (
@@ -416,9 +457,8 @@ const ProgressTracking = () => {
 
         {/* ── ACHIEVEMENTS ── */}
         <div style={{ marginBottom: 24, opacity: show ? 1 : 0, transform: show ? "none" : "translateY(12px)", transition: "all 0.4s ease 0.2s" }}>
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4">
             <h2 className="text-sm font-bold text-foreground">Recent Achievements</h2>
-            <span className="text-xs text-primary cursor-pointer hover:underline">View All</span>
           </div>
           <div className="grid grid-cols-4 gap-3">
             {milestones.slice(0, 4).map((m, i) => {

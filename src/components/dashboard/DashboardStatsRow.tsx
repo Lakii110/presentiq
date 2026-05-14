@@ -6,7 +6,8 @@ import { calcStreak } from "@/hooks/useStreak";
 function calcImprovement(sessions: { analysis?: { overall_score: number } }[]): number | null {
   const scored = sessions.filter((s) => s.analysis).map((s) => s.analysis!.overall_score);
   if (scored.length < 2) return null;
-  return scored[0] - scored[scored.length - 1]; // newest first
+  // Calculate: latest - first (positive = improvement, negative = decline)
+  return scored[scored.length - 1] - scored[0];
 }
 
 const DashboardStatsRow = () => {
@@ -29,19 +30,19 @@ const DashboardStatsRow = () => {
   ];
 
   return (
-    <div className="grid grid-cols-4" style={{ gap: 24 }}>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
       {statsCards.map((stat) => (
-        <div key={stat.label} className="border border-border bg-card transition-all duration-200 hover:shadow-md" style={{ borderRadius: 20, padding: 24 }}>
-          <div className="flex items-center" style={{ gap: 12, marginBottom: 16 }}>
-            <div className="flex items-center justify-center" style={{ width: 40, height: 40, borderRadius: 12, backgroundColor: `${stat.color}15` }}>
-              <stat.icon style={{ width: 20, height: 20, color: stat.color }} />
+        <div key={stat.label} className="border border-border bg-card transition-all duration-200 hover:shadow-md rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl" style={{ backgroundColor: `${stat.color}15` }}>
+              <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: stat.color }} />
             </div>
-            <span className="font-medium text-muted-foreground bg-secondary" style={{ fontSize: 11, borderRadius: 99, padding: "2px 10px" }}>
+            <span className="font-medium text-muted-foreground bg-secondary text-[10px] sm:text-[11px] rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1">
               {stat.badge}
             </span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-          <p className="text-xs text-muted-foreground" style={{ marginTop: 4 }}>{stat.label}</p>
+          <p className="text-xl sm:text-2xl font-bold text-foreground">{stat.value}</p>
+          <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
         </div>
       ))}
     </div>

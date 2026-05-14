@@ -19,7 +19,7 @@ function Row({ icon: Icon, title, desc, action }: {
   icon: React.ElementType; title: string; desc: string; action: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 py-4">
       <div className="flex items-center gap-3">
         <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
         <div>
@@ -27,7 +27,7 @@ function Row({ icon: Icon, title, desc, action }: {
           <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
         </div>
       </div>
-      <div className="shrink-0">{action}</div>
+      <div className="shrink-0 w-full sm:w-auto">{action}</div>
     </div>
   );
 }
@@ -35,7 +35,7 @@ function Row({ icon: Icon, title, desc, action }: {
 function Divider() { return <div className="border-t border-border" />; }
 
 function SectionCard({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-2xl border border-border bg-card" style={{ padding: "4px 24px" }}>{children}</div>;
+  return <div className="rounded-2xl border border-border bg-card px-4 sm:px-6 py-1">{children}</div>;
 }
 
 function SectionHeader({ icon: Icon, title, desc }: { icon: React.ElementType; title: string; desc: string }) {
@@ -135,7 +135,7 @@ const Settings = () => {
   const queryClient = useQueryClient();
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [notif, setNotif] = useState({ reminders: true, email: false, weekly: true });
+  const [notif, setNotif] = useState({ reminders: true, email: false });
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [confirmSessions, setConfirmSessions] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -188,18 +188,18 @@ const Settings = () => {
 
   return (
     <DashboardLayout>
-      <div style={{ paddingTop: 40, paddingBottom: 8 }}>
-        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Manage your account, appearance, and notifications.</p>
+      <div className="pt-6 sm:pt-8 md:pt-10 pb-2">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Settings</h1>
+        <p className="mt-1 text-xs sm:text-sm text-muted-foreground">Manage your account, appearance, and notifications.</p>
       </div>
 
-      <section style={{ marginTop: 36 }}>
+      <section className="mt-6 sm:mt-9">
         <SectionHeader icon={Lock} title="Security" desc="Password and account access" />
         <SectionCard>
           <Row icon={Lock} title="Change Password" desc="Update your login password"
             action={!showPasswordForm && (
               <button onClick={() => setShowPasswordForm(true)}
-                className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors">
+                className="rounded-lg border border-border px-4 py-2 sm:py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors min-h-[44px] sm:min-h-0 w-full sm:w-auto">
                 Change
               </button>
             )}
@@ -208,17 +208,17 @@ const Settings = () => {
         </SectionCard>
       </section>
 
-      <section style={{ marginTop: 36 }}>
+      <section className="mt-6 sm:mt-9">
         <SectionHeader icon={Sun} title="Appearance" desc="Choose how PresentIQ looks" />
         <SectionCard>
           <Row icon={Sun} title="Theme" desc="Switch between light, dark, or system default"
             action={mounted ? (
-              <div className="flex rounded-xl border border-border bg-secondary/40 p-1 gap-1">
+              <div className="flex rounded-xl border border-border bg-secondary/40 p-1 gap-1 w-full sm:w-auto">
                 {themeOptions.map((t) => (
                   <button key={t.value} onClick={() => { setTheme(t.value); toast.success(`Theme set to ${t.label}.`); }}
-                    className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-200"
+                    className="flex items-center justify-center gap-1.5 rounded-lg px-2 sm:px-3 py-2 sm:py-1.5 text-xs font-medium transition-all duration-200 flex-1 sm:flex-initial min-h-[44px] sm:min-h-0"
                     style={{ background: theme === t.value ? "hsl(var(--primary))" : "transparent", color: theme === t.value ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))" }}>
-                    <t.icon className="h-3.5 w-3.5" />{t.label}
+                    <t.icon className="h-3.5 w-3.5" /><span className="hidden sm:inline">{t.label}</span>
                   </button>
                 ))}
               </div>
@@ -227,13 +227,12 @@ const Settings = () => {
         </SectionCard>
       </section>
 
-      <section style={{ marginTop: 36 }}>
+      <section className="mt-6 sm:mt-9">
         <SectionHeader icon={Bell} title="Notifications" desc="Control when and how you get updates" />
         <SectionCard>
           {[
             { key: "reminders" as const, icon: BellRing, title: "Practice Reminders", desc: "Get reminded to practice regularly" },
             { key: "email" as const, icon: Mail, title: "Email Notifications", desc: "Receive session summaries via email" },
-            { key: "weekly" as const, icon: Bell, title: "Weekly Progress Reports", desc: "A weekly summary of your improvement" },
           ].map((item, i) => (
             <div key={item.key}>
               {i > 0 && <Divider />}
@@ -251,7 +250,7 @@ const Settings = () => {
           <Row icon={Trash2} title="Delete All Sessions" desc="Remove all your practice sessions and recordings"
             action={!confirmSessions && (
               <button onClick={() => setConfirmSessions(true)}
-                className="rounded-lg border border-border px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+                className="rounded-lg border border-border px-4 py-2 sm:py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors min-h-[44px] sm:min-h-0 w-full sm:w-auto">
                 Delete sessions
               </button>
             )}
@@ -265,7 +264,7 @@ const Settings = () => {
         </SectionCard>
       </section>
 
-      <section style={{ marginTop: 36, marginBottom: 56 }}>
+      <section className="mt-6 sm:mt-9 mb-10 sm:mb-14">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10">
             <AlertTriangle className="h-4 w-4 text-destructive" />
@@ -275,11 +274,11 @@ const Settings = () => {
             <p className="text-xs text-muted-foreground">Irreversible actions - proceed with caution</p>
           </div>
         </div>
-        <div className="rounded-2xl border border-destructive/30 bg-card" style={{ padding: "4px 24px" }}>
+        <div className="rounded-2xl border border-destructive/30 bg-card px-4 sm:px-6 py-1">
           <Row icon={Trash2} title="Delete Account" desc={`Permanently delete your account and all data for ${user?.email ?? "your account"}`}
             action={!confirmDelete && (
               <button onClick={() => setConfirmDelete(true)}
-                className="rounded-lg border border-destructive/40 px-4 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors">
+                className="rounded-lg border border-destructive/40 px-4 py-2 sm:py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors min-h-[44px] sm:min-h-0 w-full sm:w-auto">
                 Delete account
               </button>
             )}

@@ -15,16 +15,16 @@ const AdminUsers = () => {
 
   return (
     <AdminLayout title="Users">
-      <div className="flex items-center justify-between" style={{ marginBottom: 20 }}>
-        <div className="relative">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-5">
+        <div className="relative w-full sm:w-auto">
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <input placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)}
-            className="h-8 rounded-md border border-border bg-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30"
-            style={{ width: 240, paddingLeft: 30, paddingRight: 10 }} />
+            className="h-9 sm:h-8 rounded-md border border-border bg-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 w-full sm:w-[240px]"
+            style={{ paddingLeft: 30, paddingRight: 10 }} />
         </div>
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-secondary/50">

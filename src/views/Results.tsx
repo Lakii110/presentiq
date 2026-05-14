@@ -15,7 +15,7 @@ function getScoreColor(score: number) {
 }
 
 function getRobotMessage(score: number): string {
-  if (score >= 85) return "Outstanding! You're on fire —\nkeep that momentum going! 🔥";
+  if (score >= 85) return "Outstanding! You're on fire —\nkeep up the great work! 🔥";
   if (score >= 75) return "Nice work! Let's make\nit even better next time. 🚀";
   if (score >= 60) return "Good effort! A bit more practice\nand you'll nail it. 💪";
   return "Keep going — every session\nmakes you stronger. 🎤";

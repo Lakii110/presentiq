@@ -124,9 +124,11 @@ const AdminProfile = () => {
               <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                 <Shield className="h-3 w-3" /> Administrator
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">
-                <Clock className="h-3 w-3" /> Active since Jan 2025
-              </span>
+              {user?.created_at && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">
+                  <Clock className="h-3 w-3" /> Active since {new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                </span>
+              )}
             </div>
           </div>
 
@@ -197,10 +199,25 @@ const AdminProfile = () => {
             <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 px-4 py-3">
               <div className="flex items-center gap-3">
                 <Key className="h-4 w-4 text-muted-foreground" />
-                <div><p className="text-sm font-medium text-foreground">Two-Factor Auth</p><p className="text-xs text-muted-foreground">Enabled via authenticator app</p></div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">Two-Factor Auth</p>
+                  <p className="text-xs text-muted-foreground">
+                    {user?.two_factor_enabled 
+                      ? `Enabled via ${user.two_factor_method || "authenticator app"}`
+                      : "Not enabled"}
+                  </p>
+                </div>
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                <Check className="h-3 w-3" /> Active
+              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                user?.two_factor_enabled 
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  : "bg-secondary text-muted-foreground"
+              }`}>
+                {user?.two_factor_enabled ? (
+                  <><Check className="h-3 w-3" /> Active</>
+                ) : (
+                  "Not Enabled"
+                )}
               </span>
             </div>
           </div>

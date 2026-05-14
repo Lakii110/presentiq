@@ -6,7 +6,7 @@ import HeroBotAnimation from "./HeroBotAnimation";
 
 const HeroSection = () => {
   return (
-    <section className="gradient-hero overflow-hidden py-12 sm:py-16 md:py-20 lg:py-28">
+    <section className="gradient-hero overflow-hidden py-12 sm:py-16 md:py-20 lg:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ maxWidth: 1320 }}>
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <div className="max-w-xl">
@@ -30,17 +30,6 @@ const HeroSection = () => {
               </Link>
             </div>
             <p className="mt-3 sm:mt-4 text-xs text-muted-foreground/70">Free to use. No sign-up required.</p>
-            <div className="mt-8 sm:mt-10">
-              <p className="mb-2 sm:mb-3 text-xs text-muted-foreground/60">Trusted by teams and students at</p>
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-8 text-xs sm:text-sm font-semibold text-muted-foreground/40">
-                <span>Google</span>
-                <span>Microsoft</span>
-                <span>Stanford</span>
-                <span>TED</span>
-                <span>Deloitte</span>
-                <span>Salesforce</span>
-              </div>
-            </div>
           </div>
           <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
             <HeroBotAnimation />

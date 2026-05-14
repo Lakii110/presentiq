@@ -50,8 +50,8 @@ const AdminSettings = () => {
   const services = [
     { name: "API Server", status: health?.api ?? (healthLoading ? "Checking…" : "Unknown") },
     { name: "Database",   status: health?.database ?? (healthLoading ? "Checking…" : "Unknown") },
-    { name: "AI Engine",  status: "Operational" },
-    { name: "Storage",    status: "Operational" },
+    { name: "AI Engine",  status: health?.ai_engine ?? (healthLoading ? "Checking…" : "Unknown") },
+    { name: "Storage",    status: health?.storage ?? (healthLoading ? "Checking…" : "Unknown") },
   ];
 
   const allHealthy = health?.overall === "Healthy";

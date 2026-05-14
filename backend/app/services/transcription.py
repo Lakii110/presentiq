@@ -31,22 +31,17 @@ def transcribe_audio(path: str) -> tuple[list[dict[str, float | str]], float, di
     model = get_whisper_model()
     logger.info("Starting transcription of: %s", path)
     
-    # Transcribe with LARGE-V3 model for maximum accuracy
-    # Optimized for: pronunciation understanding, accents, long speeches
-    # VAD disabled to get full transcription without audio removal
+    # Optimized for maximum speed while maintaining good accuracy
     segments_gen, info = model.transcribe(
         path,
-        beam_size=5,  # Multiple decoding paths for accuracy
-        best_of=5,  # Best of 5 attempts
-        temperature=[0.0, 0.2, 0.4, 0.6, 0.8, 1.0],  # Temperature fallback
-        vad_filter=False,  # DISABLED - Get full transcription
-        condition_on_previous_text=True,  # Use context from previous segments
-        no_speech_threshold=0.5,  # Lower threshold to catch more speech
-        compression_ratio_threshold=2.4,  # Detect repetition
-        log_prob_threshold=-1.0,  # Accept lower confidence for difficult audio
-        word_timestamps=True,  # Enable word-level timestamps
-        language="en",  # Force English for consistency
-        initial_prompt="This is a presentation or speech recording. The speaker may use filler words like um, uh, like, you know. Pay attention to pronunciation and accents.",
+        beam_size=1,  # Faster: single beam instead of 5
+        vad_filter=True,  # Enable VAD to skip silence (faster)
+        condition_on_previous_text=False,  # Disable for speed (slight accuracy trade-off)
+        language="en",
+        initial_prompt="This is a presentation or speech recording with filler words like um, uh, like, you know.",
+        compression_ratio_threshold=2.4,  # Default, but explicit
+        log_prob_threshold=-1.0,  # Default, but explicit
+        no_speech_threshold=0.6,  # Default, but explicit
     )
     
     segments: list[dict[str, float | str]] = []
@@ -54,10 +49,7 @@ def transcribe_audio(path: str) -> tuple[list[dict[str, float | str]], float, di
         text = (s.text or "").strip()
         if not text:
             continue
-        # Accept even single characters to get full transcription
         segments.append({"start": float(s.start), "end": float(s.end), "text": text})
-        # Log each segment for debugging
-        logger.info(f"Segment {len(segments)}: [{s.start:.2f}s - {s.end:.2f}s] '{text}'")
 
     logger.info("Transcription complete: %d segments", len(segments))
 

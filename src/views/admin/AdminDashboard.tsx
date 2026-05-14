@@ -48,23 +48,23 @@ const AdminDashboard = () => {
   return (
     <AdminLayout title="Dashboard">
       {/* Stat cards */}
-      <div className="grid grid-cols-4" style={{ gap: 16 }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {statCards.map((s) => (
-          <div key={s.label} className="rounded-xl border border-border bg-card" style={{ padding: 20 }}>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary" style={{ marginBottom: 12 }}>
-              <s.icon className="text-muted-foreground" style={{ width: 15, height: 15 }} />
+          <div key={s.label} className="rounded-xl border border-border bg-card p-4 sm:p-5">
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-secondary mb-2 sm:mb-3">
+              <s.icon className="text-muted-foreground w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <p className="text-xl font-bold text-foreground">{s.value}</p>
-            <p className="text-[11px] mt-1 text-muted-foreground">{s.label}</p>
+            <p className="text-lg sm:text-xl font-bold text-foreground">{s.value}</p>
+            <p className="text-[10px] sm:text-[11px] mt-1 text-muted-foreground">{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Activity chart */}
-      <div className="rounded-xl border border-border bg-card" style={{ marginTop: 24, padding: 24 }}>
+      <div className="rounded-xl border border-border bg-card mt-4 sm:mt-6 p-4 sm:p-6">
         <h2 className="text-sm font-semibold mb-1 text-foreground">Session Activity</h2>
         <p className="text-[11px] mb-4 text-muted-foreground">Sessions over the last 7 days</p>
-        <div style={{ height: 220 }}>
+        <div className="h-48 sm:h-56">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={activityData}>
               <defs>
@@ -85,11 +85,11 @@ const AdminDashboard = () => {
 
       {/* Real skill insights */}
       {skillInsights.length > 0 && (
-        <div style={{ marginTop: 24 }}>
+        <div className="mt-4 sm:mt-6">
           <h2 className="text-sm font-semibold mb-3 text-foreground">Platform Insights</h2>
-          <div className="grid grid-cols-3" style={{ gap: 16 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {/* Donut: session status breakdown */}
-            <div className="rounded-xl border border-border bg-card" style={{ padding: 20 }}>
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
               <p className="text-xs font-semibold mb-3 text-foreground">Session Status</p>
               {(() => {
                 const ready = sessions.filter(s => s.status === "ready").length;
@@ -129,12 +129,12 @@ const AdminDashboard = () => {
             </div>
 
             {skillInsights.map((i) => (
-              <div key={i.title} className="rounded-xl border border-border bg-card hover:shadow-md transition-shadow" style={{ padding: 20 }}>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg mb-3" style={{ background: `${i.color}18` }}>
-                  <i.icon style={{ width: 15, height: 15, color: i.color }} />
+              <div key={i.title} className="rounded-xl border border-border bg-card hover:shadow-md transition-shadow p-4 sm:p-5">
+                <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg mb-3" style={{ background: `${i.color}18` }}>
+                  <i.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: i.color }} />
                 </div>
                 <p className="text-sm font-semibold mb-1 text-foreground">{i.title}</p>
-                <p className="text-[12px] leading-relaxed text-muted-foreground">{i.desc}</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">{i.desc}</p>
               </div>
             ))}
           </div>

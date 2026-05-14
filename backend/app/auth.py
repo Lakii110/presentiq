@@ -11,9 +11,9 @@ from app.config import settings
 from app.database import get_db
 from app.models import User
 
-# NOTE: bcrypt/passlib has compatibility issues on some Windows/Py3.12 setups.
-# Argon2 is also a stronger modern choice for password hashing.
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+# Support both bcrypt and argon2 for backward compatibility
+# New passwords use argon2, but we can verify old bcrypt hashes
+pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")
 security = HTTPBearer(auto_error=False)
 
 
@@ -22,7 +22,11 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    try:
+        return pwd_context.verify(plain, hashed)
+    except Exception:
+        # If hash format is unrecognized, return False instead of crashing
+        return False
 
 
 def create_access_token(sub: str, is_admin: bool = False) -> str:

@@ -560,53 +560,96 @@ def _build_summary(
     filler_rate = round((fillers / max(words, 1)) * 100, 1)
 
     if mode == "practice":
-        # Friendly, encouraging summary
+        # Natural, conversational feedback like a friendly professor
+        
+        # Opening based on overall performance
         if overall >= 85:
-            s1 = f"Outstanding performance! 🌟 You scored {overall}/100 in your {duration_min}-minute speech."
+            opening = f"I really enjoyed listening to your {duration_min} minute presentation! You scored {overall} out of 100, which shows you've developed some excellent speaking habits. "
         elif overall >= 75:
-            s1 = f"Great job! You scored {overall}/100 in a {duration_min}-minute speech. You're making real progress!"
+            opening = f"Nice work on your {duration_min} minute speech! You earned {overall} out of 100, and I can see you're making solid progress. "
         elif overall >= 65:
-            s1 = f"Good effort! You scored {overall}/100 over {duration_min} minutes. You're building solid speaking habits."
+            opening = f"Thanks for sharing your {duration_min} minute presentation with me. You scored {overall} out of 100, which is a good foundation to build on. "
+        elif overall >= 50:
+            opening = f"I appreciate you practicing with this {duration_min} minute speech. You got {overall} out of 100, and there's definitely room to grow here. "
         else:
-            s1 = f"You scored {overall}/100 in this {duration_min}-minute session. Every practice session builds your skills—keep going! 💪"
+            opening = f"Thank you for working through this {duration_min} minute practice session. You scored {overall} out of 100. Don't worry, everyone starts somewhere, and the fact that you're practicing means you're already improving! "
 
-        if top and top["value"] >= 70:
-            s2 = f"Your strongest area was {top['skill']} at {top['value']}%—{top['tip']}"
-        elif top:
-            s2 = f"Your best skill this session was {top['skill']} at {top['value']}%."
+        # Strength recognition
+        if top and top["value"] >= 80:
+            strength = f"What really stood out to me was your {top['skill'].lower()}, which scored {top['value']}%. That's genuinely impressive and something you should feel confident about. "
+        elif top and top["value"] >= 70:
+            strength = f"I noticed your {top['skill'].lower()} was your strongest area at {top['value']}%. You're doing well there, so keep that up. "
+        elif top and top["value"] >= 60:
+            strength = f"Your best area was {top['skill'].lower()} at {top['value']}%. It's not perfect yet, but it's heading in the right direction. "
         else:
-            s2 = ""
+            strength = ""
 
-        if weak and weak["value"] < 75:
-            s3 = f"Focus on improving {weak['skill']} ({weak['value']}%) in your next session: {weak['tip']}"
+        # Constructive feedback on weakness
+        if weak and weak["value"] < 50:
+            weakness = f"Now, let's talk about {weak['skill'].lower()}, which came in at {weak['value']}%. This needs some attention. {weak['tip']} I'd suggest focusing your next few practice sessions specifically on this. "
+        elif weak and weak["value"] < 65:
+            weakness = f"The area that needs the most work is {weak['skill'].lower()} at {weak['value']}%. {weak['tip']} Try dedicating some time to this in your next practice. "
+        elif weak and weak["value"] < 75:
+            weakness = f"If I had to pick one thing to improve, it would be {weak['skill'].lower()} at {weak['value']}%. {weak['tip']} "
+        else:
+            weakness = ""
+
+        # Specific filler word feedback if relevant
+        if fillers > 0 and filler_rate > 5:
+            filler_feedback = f"I also noticed you used {fillers} filler words throughout your speech, which works out to about {filler_rate}% of what you said. That's pretty common when we're nervous or thinking on our feet. Try replacing those 'ums' and 'likes' with a brief pause instead. Silence actually sounds more confident than fillers. "
         elif fillers > 0 and filler_rate > 3:
-            s3 = f"You used {fillers} filler words ({filler_rate}% of your speech)—replacing them with brief pauses will make you sound more polished."
+            filler_feedback = f"You had {fillers} filler words in there, which is about {filler_rate}% of your speech. Not bad, but there's room to clean that up. When you feel an 'um' coming, just pause for a second instead. "
+        elif fillers > 0:
+            filler_feedback = f"You only used {fillers} filler words, which is excellent control! "
         else:
-            s3 = "Keep up the consistency—regular practice is the fastest path to confident delivery! 🚀"
+            filler_feedback = ""
 
-        return f"{s1} {s2} {s3}".strip()
+        # Encouraging closing
+        if overall >= 85:
+            closing = "You're doing really well. Keep practicing regularly, and you'll maintain this high level of performance."
+        elif overall >= 75:
+            closing = "You're on the right track. With consistent practice, you'll see steady improvement."
+        elif overall >= 65:
+            closing = "Keep at it! Regular practice is what makes the difference, and you're building good habits."
+        elif overall >= 50:
+            closing = "Don't get discouraged. Every great speaker started where you are now. The key is to keep practicing and focus on one skill at a time."
+        else:
+            closing = "Remember, improvement comes from consistent practice. Pick one area to work on, practice it for a week, then move to the next. You've got this!"
+
+        return f"{opening}{strength}{weakness}{filler_feedback}{closing}".strip()
     
     else:
-        # Exam mode: Formal, brief, examiner-style summary
+        # Exam mode: Brief, direct feedback (same as photo but without colons)
+        
+        # Performance level
         if overall >= 85:
-            s1 = f"Performance: Excellent. Score: {overall}/100. Duration: {duration_min} minutes."
+            perf = f"Performance is excellent. "
         elif overall >= 75:
-            s1 = f"Performance: Good. Score: {overall}/100. Duration: {duration_min} minutes."
+            perf = f"Performance is good. "
         elif overall >= 65:
-            s1 = f"Performance: Satisfactory. Score: {overall}/100. Duration: {duration_min} minutes."
+            perf = f"Performance is satisfactory. "
         else:
-            s1 = f"Performance: Below standard. Score: {overall}/100. Duration: {duration_min} minutes."
-
+            perf = f"Performance is below standard. "
+        
+        # Score and duration
+        score_info = f"Score is {overall} out of 100. Duration is {duration_min} minutes. "
+        
+        # Strongest area
         if top:
-            s2 = f"Strongest competency: {top['skill']} ({top['value']}%)."
+            strength = f"Strongest competency is {top['skill']} at {top['value']}%. "
         else:
-            s2 = ""
-
+            strength = ""
+        
+        # Weakness
         if weak and weak["value"] < 75:
-            s3 = f"Primary deficiency: {weak['skill']} ({weak['value']}%). Remediation required."
-        elif fillers > 0 and filler_rate > 3:
-            s3 = f"Filler word usage: {fillers} instances ({filler_rate}%). Requires attention."
+            weakness = f"Primary deficiency is {weak['skill']} at {weak['value']}%. "
         else:
-            s3 = "Overall delivery meets minimum standards."
-
-        return f"{s1} {s2} {s3}".strip()
+            weakness = ""
+        
+        # Remediation note
+        if overall < 75 or (weak and weak["value"] < 70):
+            remedy = "Remediation required."
+        else:
+            remedy = "Continue practicing to maintain standards."
+        
+        return f"{perf}{score_info}{strength}{weakness}{remedy}".strip()

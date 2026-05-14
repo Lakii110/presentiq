@@ -13,8 +13,8 @@ const StageBot = ({ isHovered }: StageBotProps) => (
         borderRadius: 26,
         background: "linear-gradient(145deg, #F5F7FA, #EDEFF2)",
         boxShadow: isHovered
-          ? "0 0 40px hsl(225 73% 57% / 0.25), 8px 8px 20px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9), inset 1px 1px 2px rgba(255,255,255,0.7)"
-          : "8px 8px 20px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9), inset 1px 1px 2px rgba(255,255,255,0.7)",
+          ? "0 0 60px hsl(200 100% 70% / 0.4), 0 0 30px hsl(200 100% 70% / 0.5), 0 0 40px hsl(225 73% 57% / 0.25), 8px 8px 20px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9), inset 1px 1px 2px rgba(255,255,255,0.7)"
+          : "0 0 50px hsl(200 100% 70% / 0.3), 0 0 25px hsl(200 100% 70% / 0.4), 8px 8px 20px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9), inset 1px 1px 2px rgba(255,255,255,0.7)",
         transition: "box-shadow 0.25s ease",
         flexShrink: 0,
       }}

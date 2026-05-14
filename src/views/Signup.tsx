@@ -155,7 +155,7 @@ const Signup = () => {
 
         {/* Footer */}
         <div className="relative z-10 p-8 text-xs text-primary-foreground/30">
-          © 2026 PresentIQ. All rights reserved.
+          © {new Date().getFullYear()} PresentIQ. All rights reserved.
         </div>
       </div>
 

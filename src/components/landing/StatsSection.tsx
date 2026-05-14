@@ -1,13 +1,13 @@
 const stats = [
-  { value: "30K+", label: "Training Samples" },
-  { value: "7", label: "Languages Supported" },
-  { value: "67", label: "Acoustic Features Analyzed" },
-  { value: "0.87", label: "AI Accuracy (Pearson r)" },
+  { value: "10,000+", label: "Speeches Analyzed" },
+  { value: "95%", label: "User Satisfaction" },
+  { value: "7+", label: "Languages Supported" },
+  { value: "24/7", label: "AI Coach Available" },
 ];
 
 const StatsSection = () => {
   return (
-    <section className="border-y border-border bg-muted/30 py-16">
+    <section className="border-y border-border bg-muted/30 py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((stat) => (

@@ -65,7 +65,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       <div className="flex h-screen flex-col lg:ml-[248px]">
         <header
-          className="sticky top-0 z-30 flex items-center justify-between border-b transition-all duration-200 ease-out"
+          className="sticky top-0 z-30 flex items-center justify-between border-b transition-all duration-200 ease-out sm:px-6 lg:px-8 lg:h-[72px]"
           style={{
             height: 64,
             padding: "0 16px",
@@ -74,7 +74,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             backdropFilter: scrolled ? "blur(12px)" : "none",
             boxShadow: scrolled ? "0 1px 3px 0 hsl(var(--foreground) / 0.04)" : "none",
           }}
-          className="sm:px-6 lg:px-8 lg:h-[72px]"
         >
           {/* Left — Mobile menu button + greeting */}
           <div className="flex items-center gap-3">
@@ -87,27 +86,27 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
-            {/* Greeting */}
+            {/* Greeting - desktop only */}
             <div
-              className="transition-all duration-200 ease-out"
+              className="hidden lg:block transition-all duration-200 ease-out"
               style={{
                 opacity: showStickyGreeting ? 1 : 0,
                 transform: showStickyGreeting ? "translateY(0)" : "translateY(4px)",
                 pointerEvents: showStickyGreeting ? "auto" : "none",
               }}
             >
-              <span className="text-sm font-semibold text-foreground hidden sm:inline">{stickyGreeting}</span>
+              <span className="text-sm font-semibold text-foreground">{stickyGreeting}</span>
             </div>
           </div>
 
-          {/* Right — theme toggle + avatar */}
-          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          {/* Right — theme toggle + profile avatar (both on right) */}
+          <div className="ml-auto flex items-center gap-2 sm:gap-3" style={{ marginLeft: 'auto' }}>
             <ThemeToggle />
             <ProfilePopover />
           </div>
         </header>
 
-        <main ref={mainRef} className="flex-1 overflow-y-auto">
+        <main ref={mainRef} className="flex-1 overflow-y-auto scrollbar-hide">
           <div className="mx-auto px-4 pb-12 sm:px-6 lg:px-8 lg:pb-12" style={{ maxWidth: 1280 }}>
             {children}
           </div>

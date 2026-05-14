@@ -59,6 +59,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
             backdropFilter: "blur(12px)",
           }}
         >
+          {/* Left — Mobile menu button + title */}
           <div className="flex items-center gap-3">
             {/* Mobile menu button */}
             <button
@@ -69,17 +70,19 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
+            {/* Title */}
             <h1 className="text-sm sm:text-base font-semibold text-foreground truncate">{title}</h1>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Right — theme toggle + profile avatar (both on right) */}
+          <div className="flex items-center gap-2" style={{ marginLeft: 'auto' }}>
             <ThemeToggle />
             <AdminProfilePopover />
           </div>
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto scrollbar-hide">
           <div className="mx-auto px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12" style={{ maxWidth: 1280 }}>
             {children}
           </div>

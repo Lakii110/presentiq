@@ -186,30 +186,30 @@ const Profile = () => {
         <ChangePasswordDialog onClose={() => setShowPasswordDialog(false)} />
       )}
 
-      <div style={{ paddingTop: 40 }}>
+      <div className="pt-6 sm:pt-8 md:pt-10">
 
         {/* Header */}
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-card" style={{ ...anim(0), padding: 32 }}>
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8" style={anim(0)}>
           <div className="pointer-events-none absolute inset-0 opacity-[0.035]" style={{ background: "radial-gradient(ellipse 60% 50% at 80% 20%, hsl(var(--primary)), transparent)" }} />
-          <div className="relative flex items-center gap-6">
+          <div className="relative flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
             <div className="relative shrink-0">
               <UserAvatar initials={initials} src={user?.avatar_url} size={80} rounded="2xl" />
             </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-bold text-foreground">{displayName || user?.email}</h2>
-              <p className="mt-0.5 text-sm text-muted-foreground">{user?.email}</p>
+            <div className="flex-1 text-center sm:text-left">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground break-words">{displayName || user?.email}</h2>
+              <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground break-all">{user?.email}</p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex flex-wrap items-center justify-center gap-2 shrink-0 w-full sm:w-auto">
               {hasPhoto && (
-                <Button variant="outline" size="sm" className="rounded-xl text-xs text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => setShowRemoveDialog(true)} disabled={avatarBusy}>
-                  <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Remove Photo
+                <Button variant="outline" size="sm" className="rounded-xl text-xs text-destructive border-destructive/30 hover:bg-destructive/10 min-h-[44px] sm:min-h-0" onClick={() => setShowRemoveDialog(true)} disabled={avatarBusy}>
+                  <Trash2 className="mr-1.5 h-3.5 w-3.5" /> <span className="hidden sm:inline">Remove Photo</span><span className="sm:hidden">Remove</span>
                 </Button>
               )}
-              <label className={`inline-flex items-center gap-1.5 cursor-pointer rounded-xl border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors ${avatarBusy ? "opacity-50 pointer-events-none" : ""}`}>
+              <label className={`inline-flex items-center gap-1.5 cursor-pointer rounded-xl border border-border bg-background px-3 py-2 sm:py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors min-h-[44px] sm:min-h-0 ${avatarBusy ? "opacity-50 pointer-events-none" : ""}`}>
                 <Camera className="h-3.5 w-3.5" /> {hasPhoto ? "Change Photo" : "Upload Photo"}
                 <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={handleAvatarChange} disabled={avatarBusy} />
               </label>
-              <Button variant="outline" size="sm" className="rounded-xl" onClick={() => setEditingName(true)}>
+              <Button variant="outline" size="sm" className="rounded-xl min-h-[44px] sm:min-h-0" onClick={() => setEditingName(true)}>
                 <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit Profile
               </Button>
             </div>
@@ -217,13 +217,13 @@ const Profile = () => {
         </div>
 
         {/* Personal info — full width now */}
-        <div className="rounded-2xl border border-border bg-card mt-6" style={{ ...anim(1), padding: 24 }}>
+        <div className="rounded-2xl border border-border bg-card mt-4 sm:mt-6 p-4 sm:p-6" style={anim(1)}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><User className="h-4 w-4 text-primary" /></div>
               <h3 className="text-sm font-semibold text-foreground">Personal Information</h3>
             </div>
-            <button onClick={() => editingName ? handleSaveName() : setEditingName(true)} className="text-xs font-medium text-primary hover:text-primary/80">
+            <button onClick={() => editingName ? handleSaveName() : setEditingName(true)} className="text-xs font-medium text-primary hover:text-primary/80 min-h-[44px] sm:min-h-0 px-2">
               {editingName ? "Save" : "Edit"}
             </button>
           </div>
@@ -232,38 +232,38 @@ const Profile = () => {
               <Check className="h-3 w-3" /> Saved
             </span>
           )}
-          <div className="mt-5 grid gap-4" style={{ gridTemplateColumns: "1fr 1fr" }}>
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Display Name</label>
               {editingName
-                ? <Input value={displayNameInput} onChange={(e) => setDisplayNameInput(e.target.value)} className="rounded-xl" />
-                : <p className="rounded-xl border border-border bg-secondary/30 px-3 py-2 text-sm text-foreground">{displayName || "—"}</p>}
+                ? <Input value={displayNameInput} onChange={(e) => setDisplayNameInput(e.target.value)} className="rounded-xl min-h-[44px] sm:min-h-10" />
+                : <p className="rounded-xl border border-border bg-secondary/30 px-3 py-2 text-sm text-foreground break-words">{displayName || "—"}</p>}
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Email Address</label>
-              <div className="flex items-center gap-2 rounded-xl border border-border bg-secondary/30 px-3 py-2 text-sm text-foreground">
-                <Mail className="h-3.5 w-3.5 text-muted-foreground" />{user?.email}
+              <div className="flex items-center gap-2 rounded-xl border border-border bg-secondary/30 px-3 py-2 text-sm text-foreground break-all">
+                <Mail className="h-3.5 w-3.5 text-muted-foreground shrink-0" />{user?.email}
               </div>
             </div>
           </div>
         </div>
 
         {/* Security */}
-        <div className="rounded-2xl border border-border bg-card mt-6" style={{ ...anim(2), padding: 24 }}>
+        <div className="rounded-2xl border border-border bg-card mt-4 sm:mt-6 p-4 sm:p-6" style={anim(2)}>
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Shield className="h-4 w-4 text-primary" /></div>
             <h3 className="text-sm font-semibold text-foreground">Security</h3>
           </div>
           <div className="mt-5">
-            <div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 px-4 py-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-xl border border-border bg-secondary/30 px-4 py-3">
               <div className="flex items-center gap-3">
-                <Lock className="h-4 w-4 text-muted-foreground" />
+                <Lock className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
                   <p className="text-sm font-medium text-foreground">Password</p>
                   <p className="text-xs text-muted-foreground">Change your account password</p>
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="rounded-xl text-xs" onClick={() => setShowPasswordDialog(true)}>
+              <Button variant="outline" size="sm" className="rounded-xl text-xs min-h-[44px] sm:min-h-0 w-full sm:w-auto" onClick={() => setShowPasswordDialog(true)}>
                 Change
               </Button>
             </div>
@@ -271,7 +271,7 @@ const Profile = () => {
         </div>
 
         {/* Feedback */}
-        <div className="rounded-2xl border border-border bg-card" style={{ ...anim(3), marginTop: 24, padding: 24 }}>
+        <div className="rounded-2xl border border-border bg-card mt-4 sm:mt-6 p-4 sm:p-6" style={anim(3)}>
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><MessageSquare className="h-4 w-4 text-primary" /></div>
@@ -347,19 +347,19 @@ const Profile = () => {
         </div>
 
         {/* Danger zone */}
-        <div className="rounded-2xl border border-destructive/30 bg-card" style={{ ...anim(4), marginTop: 24, marginBottom: 48, padding: 24 }}>
+        <div className="rounded-2xl border border-destructive/30 bg-card mt-4 sm:mt-6 mb-8 sm:mb-12 p-4 sm:p-6" style={anim(4)}>
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10"><Trash2 className="h-4 w-4 text-destructive" /></div>
             <h3 className="text-sm font-semibold text-destructive">Danger Zone</h3>
           </div>
           <p className="mt-3 text-xs text-muted-foreground">These actions are permanent and cannot be undone.</p>
           <Separator className="my-4" />
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-foreground">Delete Account</p>
               <p className="text-xs text-muted-foreground">Permanently remove your account and all session data.</p>
             </div>
-            <Button variant="destructive" size="sm" className="rounded-xl text-xs" onClick={handleDeleteAccount} disabled={deleteBusy}>
+            <Button variant="destructive" size="sm" className="rounded-xl text-xs min-h-[44px] sm:min-h-0 w-full sm:w-auto" onClick={handleDeleteAccount} disabled={deleteBusy}>
               {deleteBusy ? "Deleting…" : "Delete Account"}
             </Button>
           </div>

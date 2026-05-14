@@ -8,13 +8,14 @@ import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { createSession, uploadSessionAudio, type SessionMode } from "@/lib/api";
 import { getAccessToken } from "@/lib/auth-token";
 import { usePreferences } from "@/hooks/usePreferences";
+import { useFeatureToggles } from "@/hooks/useFeatureToggles";
 
 const modes = ["Practice", "Exam"] as const;
 export type Mode = (typeof modes)[number];
 
 const bubbleText: Record<Mode, string> = {
   Practice: "I'm ready when you are.\nLet's improve your speech together. 🎤",
-  Exam: "Deep breath. You've got this —\nlet's see what you can do. 🎯",
+  Exam: "Deep breath. You've got this.\nLet's see what you can do. 🎯",
 };
 
 function pickMimeType(): string {
@@ -31,6 +32,7 @@ const PracticeStage = () => {
   useRequireAuth();
   const router = useRouter();
   const { prefs } = usePreferences();
+  const { toggles } = useFeatureToggles();
   const [mode, setMode] = useState<Mode>(prefs.practiceMode);
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -42,6 +44,14 @@ const PracticeStage = () => {
   const chunksRef = useRef<BlobPart[]>([]);
 
   const apiMode: SessionMode = mode === "Exam" ? "exam" : "practice";
+  
+  // Check if the selected mode is enabled
+  const isPracticeModeEnabled = toggles.practice_mode;
+  const isExamModeEnabled = toggles.exam_mode;
+  const isSessionRecordingEnabled = toggles.session_recording;
+  
+  // If current mode is disabled, show message
+  const isModeDisabled = (mode === "Practice" && !isPracticeModeEnabled) || (mode === "Exam" && !isExamModeEnabled);
 
   const runUpload = async (file: File) => {
     if (!getAccessToken()) {
@@ -175,7 +185,14 @@ const PracticeStage = () => {
       />
 
       <div className="relative z-10" style={{ marginBottom: 32 }}>
-        <ModeSelector mode={mode} onModeChange={setMode} />
+        <ModeSelector 
+          mode={mode} 
+          onModeChange={setMode}
+          disabledModes={[
+            ...(!isPracticeModeEnabled ? ["Practice" as Mode] : []),
+            ...(!isExamModeEnabled ? ["Exam" as Mode] : []),
+          ]}
+        />
       </div>
 
       <div
@@ -189,7 +206,7 @@ const PracticeStage = () => {
           border: "1px solid hsl(var(--border) / 0.5)",
           backdropFilter: "blur(20px)",
           boxShadow:
-            "0 0 100px hsl(225 73% 57% / 0.05), 0 12px 40px hsl(var(--foreground) / 0.04), inset 0 1px 0 hsl(0 0% 100% / 0.6)",
+            "0 0 100px hsl(225 73% 57% / 0.05), 0 12px 40px hsl(var(--foreground) / 0.04), inset 0 1px 0 hsl(0 0% 100% / 0.6), 0 0 80px hsl(200 100% 70% / 0.15), 0 0 40px hsl(200 100% 70% / 0.2)",
         }}
       >
         <div
@@ -231,40 +248,68 @@ const PracticeStage = () => {
           <StageBot isHovered={isCtaHovered} />
         </div>
 
-        {!recording ? (
-          <button
-            type="button"
-            disabled={busy}
-            onMouseEnter={() => setIsCtaHovered(true)}
-            onMouseLeave={() => setIsCtaHovered(false)}
-            onClick={startRecording}
-            className="group relative flex items-center justify-center gap-3 font-semibold transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] disabled:opacity-60"
+        {isModeDisabled ? (
+          <div
+            className="flex flex-col items-center gap-3"
             style={{
               width: "100%",
               maxWidth: 300,
-              height: 56,
+              padding: "20px 24px",
               borderRadius: 16,
-              background: "linear-gradient(135deg, hsl(225, 73%, 57%), hsl(250, 70%, 55%))",
-              color: "#fff",
-              fontSize: 16,
-              boxShadow:
-                "0 4px 24px hsl(225 73% 57% / 0.35), 0 0 60px hsl(225 73% 57% / 0.1)",
-              border: "none",
-              cursor: busy ? "wait" : "pointer",
+              background: "hsl(var(--muted) / 0.5)",
+              border: "1px solid hsl(var(--border))",
             }}
           >
-            <div
-              className="absolute inset-0 rounded-[16px]"
+            <AlertTriangle style={{ width: 24, height: 24, color: "hsl(var(--warning))" }} />
+            <p style={{ fontSize: 14, textAlign: "center", color: "hsl(var(--muted-foreground))", lineHeight: 1.5 }}>
+              {mode} Mode is currently disabled by the administrator.
+              {mode === "Practice" && isExamModeEnabled && " Try Exam Mode instead."}
+              {mode === "Exam" && isPracticeModeEnabled && " Try Practice Mode instead."}
+            </p>
+          </div>
+        ) : !recording ? (
+          <>
+            <button
+              type="button"
+              disabled={busy || !isSessionRecordingEnabled}
+              onMouseEnter={() => setIsCtaHovered(true)}
+              onMouseLeave={() => setIsCtaHovered(false)}
+              onClick={startRecording}
+              className="group relative flex items-center justify-center gap-3 font-semibold transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] disabled:opacity-60"
               style={{
+                width: "100%",
+                maxWidth: 300,
+                height: 56,
+                borderRadius: 16,
                 background: "linear-gradient(135deg, hsl(225, 73%, 57%), hsl(250, 70%, 55%))",
-                animation: "pulse-glow 2.5s ease-in-out infinite",
-                opacity: 0.25,
-                filter: "blur(10px)",
+                color: "#fff",
+                fontSize: 16,
+                boxShadow:
+                  "0 4px 24px hsl(225 73% 57% / 0.35), 0 0 60px hsl(225 73% 57% / 0.1)",
+                border: "none",
+                cursor: busy || !isSessionRecordingEnabled ? "not-allowed" : "pointer",
               }}
-            />
-            <Mic className="relative z-10" style={{ width: 20, height: 20 }} />
-            <span className="relative z-10">{busy ? "Please wait…" : "Start Speaking"}</span>
-          </button>
+            >
+              <div
+                className="absolute inset-0 rounded-[16px]"
+                style={{
+                  background: "linear-gradient(135deg, hsl(225, 73%, 57%), hsl(250, 70%, 55%))",
+                  animation: "pulse-glow 2.5s ease-in-out infinite",
+                  opacity: 0.25,
+                  filter: "blur(10px)",
+                }}
+              />
+              <Mic className="relative z-10" style={{ width: 20, height: 20 }} />
+              <span className="relative z-10">
+                {!isSessionRecordingEnabled ? "Recording Disabled" : busy ? "Please wait…" : "Start Speaking"}
+              </span>
+            </button>
+            {!isSessionRecordingEnabled && (
+              <p style={{ fontSize: 11, color: "hsl(var(--muted-foreground))", textAlign: "center", marginTop: 8 }}>
+                Session recording is currently disabled by the administrator.
+              </p>
+            )}
+          </>
         ) : (
           <button
             type="button"

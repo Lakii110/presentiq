@@ -5,8 +5,8 @@ import { Star } from "lucide-react";
 import { getPublicFeedback, type FeedbackOut } from "@/lib/api";
 
 const FALLBACK = [
-  { id: -1, rating: 5, display_name: "Sarah Jenkins", job_title: "Marketing Director", message: "PresentIQ completely changed how I prepare for board meetings. The filler word detection alone made me sound 10x more professional.", created_at: "" },
-  { id: -2, rating: 5, display_name: "David Chen",   job_title: "Software Engineer",  message: "As a non-native English speaker, the pacing feedback was invaluable. I finally know when I'm rushing and how to pause effectively.", created_at: "" },
+  { id: -1, rating: 5, display_name: "Nimal Perera", job_title: "Undergraduate, University of Colombo", message: "PresentIQ helped me prepare for my final year presentation. The filler word detection made me sound much more confident and professional.", created_at: "" },
+  { id: -2, rating: 5, display_name: "Kasun Silva", job_title: "Software Engineer", message: "As a non-native English speaker, the pacing feedback was invaluable. I finally know when I'm rushing and how to pause effectively.", created_at: "" },
   { id: -3, rating: 5, display_name: "Dr. Emily Carter", job_title: "University Professor", message: "I recommend this to all my students. It's like having a personal public speaking coach available 24/7. The progress tracking is fantastic.", created_at: "" },
 ];
 

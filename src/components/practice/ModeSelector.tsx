@@ -4,6 +4,7 @@ import type { Mode } from "./PracticeStage";
 interface ModeSelectorProps {
   mode: Mode;
   onModeChange: (mode: Mode) => void;
+  disabledModes?: Mode[];
 }
 
 const modeConfig: Record<Mode, { icon: typeof Mic; desc: string }> = {
@@ -11,7 +12,7 @@ const modeConfig: Record<Mode, { icon: typeof Mic; desc: string }> = {
   Exam:     { icon: GraduationCap, desc: "Strict scoring, no hints"  },
 };
 
-const ModeSelector = ({ mode, onModeChange }: ModeSelectorProps) => (
+const ModeSelector = ({ mode, onModeChange, disabledModes = [] }: ModeSelectorProps) => (
   <div
     className="relative flex items-center"
     style={{
@@ -24,12 +25,14 @@ const ModeSelector = ({ mode, onModeChange }: ModeSelectorProps) => (
   >
     {(["Practice", "Exam"] as const).map((m) => {
       const active = mode === m;
+      const disabled = disabledModes.includes(m);
       const Icon = modeConfig[m].icon;
       return (
         <button
           key={m}
-          onClick={() => onModeChange(m)}
-          className="relative z-10 flex items-center gap-2.5 transition-all duration-200"
+          onClick={() => !disabled && onModeChange(m)}
+          disabled={disabled}
+          className="relative z-10 flex items-center gap-2.5 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
             height: 44,
             padding: "0 24px",
@@ -50,7 +53,7 @@ const ModeSelector = ({ mode, onModeChange }: ModeSelectorProps) => (
               className="text-sm font-semibold leading-tight"
               style={{ color: active ? "hsl(var(--primary-foreground))" : "hsl(var(--foreground))" }}
             >
-              {m}
+              {m} {disabled && "(Disabled)"}
             </span>
             <span
               className="leading-tight"
