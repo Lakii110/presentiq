@@ -1,4 +1,4 @@
-# 🎤 PresentIQ - Speech Pronunciation Assessment System
+# 🎤 PresentIQ - Smart Web System to Help Improve Presentation Speech Skills
 
 A web-based AI system for evaluating English pronunciation using machine learning and speech processing.
 
@@ -250,7 +250,7 @@ presentiq/
 
 ## 🎓 Academic Project
 
-This is a final year project for [Your University Name]. 
+This is a final year project for Plymouth University. 
 
 **Note:** The full project with datasets is approximately 15.6 GB. Following industry best practices for ML projects, only the source code (~3.6 MB) is hosted on GitHub. Datasets must be downloaded separately.
 
@@ -292,8 +292,8 @@ This project is for academic purposes.
 
 - SpeechOcean762 dataset
 - L2-ARCTIC corpus
-- [Add your university/supervisor]
+- [NSBM Green University /Ms.Dulanjali Wijesekara ]
 
----
 
-**⭐ If you find this project useful, please give it a star!**
+
+
