@@ -39,14 +39,7 @@ echo.
 echo  Backend:  http://localhost:8000
 echo  Frontend: http://localhost:3000
 echo.
-echo  Login Credentials:
-echo  ------------------
-echo  Email:    lakmihathnapitiya9@gmail.com
-echo  Password: HGlak@23562
-echo.
-echo  Or Admin:
-echo  Email:    admin@test.com
-echo  Password: admin123
+echo  Use your registered credentials to login.
 echo.
 echo  ========================================================
 echo.

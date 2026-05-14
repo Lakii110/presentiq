@@ -1,11 +1,5 @@
 import { getApiBaseUrl } from "@/lib/env";
 import { getAccessToken } from "@/lib/auth-token";
-import { debugEnv } from "@/lib/debug-env";
-
-// Debug: log environment on module load
-if (typeof window !== 'undefined') {
-  debugEnv();
-}
 
 export class ApiError extends Error {
   constructor(
@@ -60,6 +54,8 @@ export type CurrentUser = {
   display_name: string | null;
   avatar_url: string | null;
   is_admin: boolean;
+  two_factor_enabled: boolean;
+  two_factor_method: string | null;
   created_at: string;
 };
 
@@ -89,6 +85,14 @@ export async function listSessions(skip = 0, limit = 50): Promise<SessionOut[]> 
   const res = await apiFetch(`/sessions?${params.toString()}`, { headers: authHeaders() });
   if (!res.ok) throw new ApiError(res.status, await readErrorMessage(res));
   return res.json();
+}
+
+export async function deleteSession(sessionId: number): Promise<void> {
+  const res = await apiFetch(`/sessions/${sessionId}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  if (!res.ok) throw new ApiError(res.status, await readErrorMessage(res));
 }
 
 export type SkillScore = { skill: string; value: number; tip: string };
@@ -365,7 +369,13 @@ export async function getAdminAnalytics(): Promise<AdminAnalytics> {
   return res.json();
 }
 
-export type AdminHealth = { api: string; database: string; overall: string };
+export type AdminHealth = { 
+  api: string; 
+  database: string; 
+  ai_engine: string;
+  storage: string;
+  overall: string;
+};
 
 export async function getAdminHealth(): Promise<AdminHealth> {
   const res = await apiFetch("/admin/health", { headers: authHeaders() });
@@ -449,7 +459,7 @@ export type FeatureToggles = {
 };
 
 export async function getFeatureToggles(): Promise<FeatureToggles> {
-  const res = await apiFetch("/admin/settings/features", { headers: authHeaders() });
+  const res = await apiFetch("/admin/settings/features/public");
   if (!res.ok) throw new ApiError(res.status, await readErrorMessage(res));
   return res.json();
 }

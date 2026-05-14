@@ -38,14 +38,7 @@ Write-Host ""
 Write-Host " Backend:  http://localhost:8000" -ForegroundColor Green
 Write-Host " Frontend: http://localhost:3000" -ForegroundColor Green
 Write-Host ""
-Write-Host " Login Credentials:" -ForegroundColor Yellow
-Write-Host " ------------------" -ForegroundColor Yellow
-Write-Host " Email:    lakmihathnapitiya9@gmail.com" -ForegroundColor White
-Write-Host " Password: HGlak@23562" -ForegroundColor White
-Write-Host ""
-Write-Host " Or Admin:" -ForegroundColor Yellow
-Write-Host " Email:    admin@test.com" -ForegroundColor White
-Write-Host " Password: admin123" -ForegroundColor White
+Write-Host " Use your registered credentials to login." -ForegroundColor Yellow
 Write-Host ""
 Write-Host " ========================================================" -ForegroundColor Cyan
 Write-Host ""

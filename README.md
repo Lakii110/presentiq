@@ -153,10 +153,6 @@ npm run dev
 
 ⚠️ **This repository does NOT include the training datasets (7.97 GB) due to GitHub size limitations.**
 
-## 📊 Dataset Setup (Required for Full Functionality)
-
-⚠️ **This repository does NOT include the training datasets (7.97 GB) due to GitHub size limitations.**
-
 ### Why Datasets Are Needed
 
 Without datasets, you can:
@@ -193,8 +189,6 @@ dataset_speech/
     ├── audio/
     └── scores.json
 ```
-
-📖 **Detailed instructions:** See [HOW_TO_RUN.md](./HOW_TO_RUN.md)
 
 ---
 
@@ -254,13 +248,6 @@ presentiq/
 
 ---
 
-## 📚 Documentation
-
-- **[HOW_TO_RUN.md](./HOW_TO_RUN.md)** - Complete setup and running instructions
-- **[README.md](./README.md)** - Project overview (this file)
-
----
-
 ## 🎓 Academic Project
 
 This is a final year project for [Your University Name]. 
@@ -285,7 +272,6 @@ This is a final year project for [Your University Name].
 **3. Dataset errors:**
 - Ensure `dataset_speech/` folder exists
 - Check dataset structure matches expected format
-- See [DATASET_SETUP.md](./DATASET_SETUP.md)
 
 ---
 
