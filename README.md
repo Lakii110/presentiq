@@ -1,4 +1,4 @@
-# 🎤 PresentIQ - Smart Web System to Help Improve Presentation Speech Skills
+# PresentIQ - Smart Web System to Help Improve Presentation Speech Skills
 
 A web-based AI system for evaluating English pronunciation using machine learning and speech processing.
 
