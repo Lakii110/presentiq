@@ -144,6 +144,10 @@ npm run dev
 
 - **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:8000
+- **Admin:** http://localhost:3000/admin
+- **email** : lakmihathnapitiya@gmail.com
+- **Passwor :** admin@123
+
 
 ⚠️ **Note:** Speech assessment features won't work without datasets. See [Dataset Setup](#dataset-setup) below.
 
